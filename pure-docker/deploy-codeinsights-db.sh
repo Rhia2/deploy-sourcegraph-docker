@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# Description: TimescaleDB time-series database for code insights data.
+# Description: PostgreSQL database for code insights data.
 #
 # Disk: 128GB / persistent SSD
 # Network: 1Gbps
@@ -11,20 +11,21 @@ set -e
 #
 VOLUME="$HOME/sourcegraph-docker/codeinsights-db-disk"
 ./ensure-volume.sh $VOLUME 999
+
 docker run --detach \
     --name=codeinsights-db \
     --network=sourcegraph \
     --restart=always \
     --cpus=4 \
     --memory=2g \
+    -e POSTGRES_DB=postgres \
     -e POSTGRES_PASSWORD=password \
+    -e POSTGRES_USER=postgres \
     -e PGDATA=/var/lib/postgresql/data/pgdata \
     -v $VOLUME:/var/lib/postgresql/data/ \
-    index.docker.io/sourcegraph/codeinsights-db:3.36.3@sha256:98133abeb1fc6d02ee9f0fca6cc3ab65e2a3a47a07db96a56aa0869389393fce
+    index.docker.io/sourcegraph/codeinsights-db:insiders@sha256:f9ec6c4ad49034945b6257355e38d402235f5a2220ca5a6ba84f154f2366c3e9
 
-# Note: You should deploy this as a container, do not try to connect it to your external
-# Postgres deployment (TimescaleDB is a bit special and most hosted Postgres deployments
-# do not support TimescaleDB, the data here is akin to gitserver's data, where losing it
-# would be bad but it can be rebuilt given enough time.)
+# Sourcegraph requires PostgreSQL 12+. Generally newer versions are better,
+# but anything 12 and higher is supported.
 
 echo "Deployed codeinsights-db service"

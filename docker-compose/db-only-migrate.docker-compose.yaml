@@ -1,5 +1,6 @@
-# This file contains only the pgsql service definition, and is used during
-# the sourcegraph/server -> docker-compose migration process.
+# This file contains the pgsql service definition (the primary Sourcegraph database deployment), 
+# as well as the codeintel-db service definition (a separate postgres deployment). Both run postgres.
+# This file is used during the sourcegraph/server -> docker-compose migration process.
 #
 # 🚨This file MUST be kept in sync with the pgsql definition in docker-compose/docker-compose.yaml
 version: '2.4'
@@ -12,7 +13,7 @@ services:
   #
   pgsql:
     container_name: pgsql
-    image: 'index.docker.io/sourcegraph/postgres-12-alpine:135107_2022-03-03_9498a8bd3366@sha256:e26b159dc7c0c47d136886390c899816e669a3c2c1ead689bdad0b610364e45e'
+    image: 'index.docker.io/sourcegraph/postgres-12-alpine:162246_2022-07-20_15dd0e0df1cc@sha256:7e6d298ed592e97c7873d687ced2a75e886441bd7d1a9cfd77a2aa5c868b8f09'
     cpus: 4
     mem_limit: '2g'
     healthcheck:
@@ -29,7 +30,7 @@ services:
 
   codeintel-db:
     container_name: codeintel-db
-    image: 'index.docker.io/sourcegraph/codeintel-db:insiders@sha256:cd901b1180229101cc8c6deebda24c14f6224295cd2153cafe0665199499c342'
+    image: 'index.docker.io/sourcegraph/codeintel-db:162246_2022-07-20_15dd0e0df1cc@sha256:202c609e60f79cd4a8ad10ea92f84324caab6f3cdfdfac19c1226e591ce0208a'
     cpus: 4
     mem_limit: '2g'
     healthcheck:
